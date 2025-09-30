@@ -1,0 +1,90 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!doctype html>
+<html lang="sq">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Raporto humbjen</title>
+  <style>
+    body{margin:0;background:#0f1724;color:#e6eef8;font-family:sans-serif;display:flex;justify-content:center;align-items:center;padding:20px}
+    .card{background:rgba(255,255,255,0.05);padding:25px;border-radius:14px;max-width:480px;width:100%}
+    h1{margin-top:0;font-size:22px;text-align:center}
+    label{display:block;margin:12px 0 6px;font-size:14px;color:#9fb0c8}
+    input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#fff;font-size:14px}
+    textarea{resize:vertical;min-height:80px}
+    .btn{margin-top:16px;width:100%;padding:14px;background:linear-gradient(90deg,#6ee7b7,#60a5fa);border:0;border-radius:8px;color:#02202a;font-weight:bold;font-size:16px;cursor:pointer;transition:0.2s}
+    .btn:hover{opacity:0.9;transform:translateY(-2px)}
+    .phone-group{display:flex;gap:6px;align-items:center;margin-top:6px}
+    .phone-group select{width:35%;padding:8px}
+    .phone-group input{width:65%}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Raporto sasinë e humbur (EUR)</h1>
+    <form id="lossForm">
+      <label for="fname">Emri</label>
+      <input id="fname" name="fname" type="text" required />
+
+      <label for="lname">Mbiemri</label>
+      <input id="lname" name="lname" type="text" required />
+
+      <label for="phone">Numri i telefonit</label>
+      <div class="phone-group">
+        <select id="phonePrefix" required>
+          <option value="+39">🇮🇹 Italy (+39)</option>
+          <option value="+1">🇺🇸 USA (+1)</option>
+          <option value="+49">🇩🇪 Germany (+49)</option>
+        </select>
+        <input id="phoneNumber" type="tel" placeholder="Numri i telefonit" required />
+      </div>
+
+      <label for="amount">Sasia e parave të humbur</label>
+      <select id="amount" name="amount" required>
+        <option value="">Zgjidh shumen</option>
+        <option value="0-1000">0–1,000 €</option>
+        <option value="1000-5000">1,000–5,000 €</option>
+        <option value="5000-10000">5,000–10,000 €</option>
+        <option value="10000-50000">10,000–50,000 €</option>
+      </select>
+
+      <label for="note">Shënim (opsionale)</label>
+      <textarea id="note" name="note"></textarea>
+
+      <button type="submit" class="btn" id="sendBtn">Dërgo</button>
+    </form>
+  </div>
+
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>
+    emailjs.init("lFUDxnsrQaj5HhGVz"); // Public Key yt
+
+    const form = document.getElementById("lossForm");
+    const btn = document.getElementById("sendBtn");
+
+    form.addEventListener("submit", function(e){
+      e.preventDefault();
+      btn.disabled = true;
+      btn.textContent = "Duke dërguar...";
+
+      const data = {
+        fname: document.getElementById("fname").value,
+        lname: document.getElementById("lname").value,
+        phone: document.getElementById("phonePrefix").value + document.getElementById("phoneNumber").value,
+        amount: document.getElementById("amount").value,
+        note: document.getElementById("note").value
+      };
+
+      emailjs.send("service_p6i361t","template_0ebvzkr",data).then(function(){
+        alert("✅ U dërgua me sukses!");
+        form.reset();
+      }, function(err){
+        alert("❌ Gabim: " + JSON.stringify(err));
+      }).finally(function(){
+        btn.disabled = false;
+        btn.textContent = "Dërgo";
+      });
+    });
+  </script>
+</body>
+</html>
